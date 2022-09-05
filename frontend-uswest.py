@@ -21,25 +21,30 @@ https://github.com/GoogleCloudPlatform/python-docs-samples/blob/master/compute/
     autoscaler/demo/frontend.py
 """
 
-import BaseHTTPServer
-from multiprocessing import Process
 import os
-import SocketServer
 import sys
 import time
+from http.server import BaseHTTPRequestHandler, HTTPServer
+from multiprocessing import Process
+from socketserver import ThreadingMixIn
+
+from urllib3.connectionpool import xrange
 
 REQUEST_CPUTIME_SEC = 1.0
 REQUEST_TIMEOUT_SEC = 5.0
 
 
 class CpuBurner(object):
-    def get_walltime(self):
+    @staticmethod
+    def get_walltime():
         return time.time()
 
-    def get_user_cputime(self):
+    @staticmethod
+    def get_user_cputime():
         return os.times()[0]
 
-    def busy_wait(self):
+    @staticmethod
+    def busy_wait():
         for _ in xrange(100000):
             pass
 
@@ -68,21 +73,21 @@ class CpuBurner(object):
         if p.is_alive():
             p.terminate()
         if p.exitcode != 0:
-            return (500, "Request failed\n")
+            return 500, "Request failed\n"
         else:
             end_time = self.get_walltime()
             response = "US West Request took %.2f walltime seconds\n" % (
-                end_time - start_time)
-            return (200, response)
+                    end_time - start_time)
+            return 200, str.encode(response)
 
 
-class DemoRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class DemoRequestHandler(BaseHTTPRequestHandler):
     """Request handler for Demo http server."""
 
     def do_GET(self):
         """Handle an HTTP GET request."""
         mapping = {
-            "/": lambda: (200, "OK USA West"),  # Return HTTP 200 response.
+            "/": lambda: (200, str.encode("OK US West")),  # Return HTTP 200 response.
             "/service": CpuBurner().handle_http_request,
         }
         if self.path not in mapping:
@@ -93,11 +98,10 @@ class DemoRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
         self.send_response(code)
         self.end_headers()
         self.wfile.write(response)
-        self.wfile.close()
 
 
-class DemoHttpServer(SocketServer.ThreadingMixIn,
-                     BaseHTTPServer.HTTPServer):
+class DemoHttpServer(ThreadingMixIn,
+                     HTTPServer):
     pass
 
 
