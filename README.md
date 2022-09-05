@@ -1,43 +1,37 @@
-# GCPTrain - Startup Script for Load Balancer Test - HTTP. 
+# gcp_instance_groups_demo - Startup Script for Load Balancer Test - HTTP. 
 
 For USA 
-
+```shell
 #! /bin/bash
 
-apt-get update
+apk update
 
-wget https://raw.githubusercontent.com/dhanajimusale/GCPTrain/master/frontend-uswest.py
+wget https://raw.githubusercontent.com/krausce/gcp_instance_groups_demo/main/frontend-uswest.py
 
-sudo python frontend-uswest.py &
-
-
-.
-
+python frontend-uswest.py &
+```
 
 For  Asia 
 
-#! /bin/bash
+```shell
+apk update
 
-apt-get update
-
-wget https://raw.githubusercontent.com/dhanajimusale/GCPTrain/master/frontend-asia.py
+wget https://raw.githubusercontent.com/krausce/gcp_instance_groups_demo/main/frontend-asia.py
 
 sudo python frontend-asia.py &
-
-
-.
+```
 
 
 For  Europe 
-
+```shell
 #! /bin/bash
 
-apt-get update
+apk update
 
-wget https://raw.githubusercontent.com/dhanajimusale/GCPTrain/master/frontend_europe.py
+wget https://raw.githubusercontent.com/krausce/gcp_instance_groups_demo/main/frontend_europe.py
 
 sudo python frontend_europe.py &
-
+```
 
 ############################################################################
 
